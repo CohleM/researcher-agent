@@ -109,9 +109,3 @@ class Scraper:
         return text
 
 
-scraping = Scraper(['https://hbr.org/2021/08/how-to-make-smart-investments-a-beginners-guide', "https://www.nerdwallet.com/article/investing/how-to-invest-money", "https://www.nerdwallet.com/article/investing/investment-strategies"])
-data = scraping.run()
-print(data)
-
-
-
