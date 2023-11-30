@@ -7,6 +7,7 @@ class Config:
         self.max_search_query = 3
         self.max_search_results_per_query = 5
         self.total_words = 1000
+        self.temperature = 0
         
         
 

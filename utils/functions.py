@@ -2,7 +2,23 @@ import json
 from colorama import Fore, Style
 
 from .llm import *
-from researcher.prompts.prompts import auto_agent_instructions
+from researcher.prompts.prompts import *
+
+
+
+async def get_sub_queries(query, role, cfg):
+    
+    messages = [
+        {"role": "system" , "content" : role },
+        {"role": "user" , "content" : generate_search_queries_prompt(query) }
+    ]
+    
+    response = await create_chat_completion(messages, temperature=cfg.temperature, model=cfg.llm)
+    response = json.loads(response)
+    
+    return response
+
+
 
 async def choose_agent(query, model):
     
@@ -16,7 +32,6 @@ async def choose_agent(query, model):
         )
         
         agent = json.loads(response)
-        
         return agent['server'], agent['agent_role_prompt']
     
     except Exception as e:
