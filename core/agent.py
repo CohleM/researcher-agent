@@ -1,3 +1,6 @@
+import asyncio
+import time
+from concurrent.futures import ThreadPoolExecutor
 from researcher.config import Config
 from researcher.search.duckduckgo import Duckduckgo
 from researcher.utils.functions import * 
@@ -29,6 +32,18 @@ class Researcher:
         #query modification
         sub_queries = await get_sub_queries(self.query, self.role, self.cfg) + [self.query]
         
+#         tasks = [self.process_query(each_query) for each_query in sub_queries]
+#         context_results = await asyncio.gather(*tasks)
+        
+#         for context in context_results:
+#             self.context.append(context)
+    
+        
+        
+    
+    
+    
+    
         for each_query in sub_queries:
             
             print(f'🔍 Searching web with query: {each_query}')
@@ -36,12 +51,16 @@ class Researcher:
             context = await self.get_similar_context(each_query, content)
             self.context.append(context)
             
+        print('Generating Report...') 
+        result = await generate_report(self.context, self.query, self.role, self.cfg)
         
-        return self.context    
-
+        return result    
+        
+    
     async def get_content_using_query(self,query):
 
-        search_engine = Duckduckgo(query = query)
+        
+        search_engine = Duckduckgo(query=query)
         search_urls = search_engine.search(max_results = self.cfg.max_search_results_per_query)
 
         search_urls = [url.get('href') for url in search_urls]
@@ -84,4 +103,7 @@ class Researcher:
         hybrid_retriever = HybridRetriever(chunks ,max_results = self.cfg.max_chunks_per_query)
         similar_context = hybrid_retriever.get_context(query)
 
-        return similar_context       
+        return similar_context
+    
+
+    
