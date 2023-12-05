@@ -1,5 +1,5 @@
 from openai import OpenAI
-
+import logging
 
 
 async def create_chat_completion(messages, temperature=0, stream=False, model='gpt-3.5-turbo'):
@@ -15,6 +15,8 @@ async def create_chat_completion(messages, temperature=0, stream=False, model='g
             model=model,
             temperature=temperature
         )
+
+        logging.debug(f'Token Usage: {chat_completion.usage}')
 
         return chat_completion.choices[0].message.content
 
