@@ -6,8 +6,11 @@ class Config:
         self.llm = "gpt-3.5-turbo"
         self.max_search_query = 3
         self.max_search_results_per_query = 5
+        self.max_chunks_per_query = 5
         self.total_words = 1000
         self.temperature = 0
+        self.chunk_size = 1000
+        self.chunk_overlap = 100
         
         
 
