@@ -8,15 +8,8 @@ from researcher.retriever.langchain_hybrid_retriever import HybridRetriever
 from researcher.scraping.scrape import Scraper
 from researcher.context.chunking import Chunking
 import logging
+from langsmith.run_helpers import traceable
 
-# Configure logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler()
-    ]
-)
 
 class Researcher:
     def __init__(self, query ):
@@ -35,7 +28,7 @@ class Researcher:
             retriever = Duckduckgo()
             
         print(f'📘 Starting research for query: {self.query}')
-        self.agent, self.role = await choose_agent(self.query, self.cfg.llm )
+        self.agent, self.role = await choose_agent(self.query, self.cfg )
         print(f'Running {self.agent} ...')
         
         #query modification
@@ -52,7 +45,7 @@ class Researcher:
         for chunk in self.context:
             total_chunks += len(chunk)
 
-        logging.debug(f'Total chunk count {total_chunks}')
+        print(f'Total chunk count {total_chunks}')
 
         print('Generating Report...') 
         result = await generate_report(self.context, self.query, self.role, self.cfg)
@@ -102,7 +95,8 @@ class Researcher:
                 self.visited_urls.add(url)
                 
         return new_urls
-    
+   
+    #@traceable(run_type="chain", name='context')
     async def get_similar_context(self, query, content):
         
         #chunk where?
